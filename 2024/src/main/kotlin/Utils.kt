@@ -17,3 +17,6 @@ private fun part(part: Int, solve: () -> Int) {
 }
 
 operator fun MatchResult.get(index: Int) = this.groupValues[index]
+
+
+typealias Point = Pair<Int, Int>
