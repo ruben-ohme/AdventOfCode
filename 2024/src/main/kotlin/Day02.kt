@@ -2,7 +2,7 @@ import kotlin.collections.zipWithNext
 import kotlin.math.abs
 
 fun main() {
-    val reports = readInput(2) { it.split(' ').map { it.toInt() } }
+    val reports = parseInput(2) { it.split(' ').map { it.toInt() } }
     part1 { reports.count { it.isSafe } }
     part2 {
         reports.count {

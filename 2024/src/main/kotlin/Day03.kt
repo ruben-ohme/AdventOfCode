@@ -1,5 +1,5 @@
 fun main() {
-    val memory = readInput(3) { it }.joinToString("")
+    val memory = parseInput(3) { it }.joinToString("")
     val r = """(mul\((\d{1,3}),(\d{1,3})\))""".toRegex()
     fun Sequence<MatchResult>.sumProducts() = sumOf { it[2].toInt() * it[3].toInt() }
     part1 { r.findAll(memory).sumProducts() }
