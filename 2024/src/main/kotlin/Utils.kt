@@ -30,3 +30,5 @@ private fun part(part: Int, solve: () -> Int) {
 }
 
 operator fun MatchResult.get(index: Int) = this.groupValues[index]
+
+val List<Int>.median: Int get() = this[size / 2]
