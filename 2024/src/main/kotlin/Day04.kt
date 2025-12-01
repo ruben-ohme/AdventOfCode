@@ -1,22 +1,22 @@
 fun main() {
-    val input = readInput(4) { it }.map { it.toCharArray() }
+    val input = parseInput(4) { it }.map { it.toCharArray() }
     val xmas = "XMAS".toCharArray()
     val height = input.size
     val width = input[0].size
     val l = xmas.size
 
     part1 {
-        fun Point.countXmases() = let { (x, y) ->
-            Direction.entries.count {
+        fun P.countXmases() = let { (x, y) ->
+            Direction4.entries.count {
                 when (it) {
-                    Direction.NORTH -> if (y >= l - 1) xmas.indices.map { input[y - it][x] } else null
-                    Direction.NORTHEAST -> if (y >= l - 1 && x <= width - l) xmas.indices.map { input[y - it][x + it] } else null
-                    Direction.EAST -> if (x <= width - l) xmas.indices.map { input[y][x + it] } else null
-                    Direction.SOUTHEAST -> if (x <= width - l && y <= height - l) xmas.indices.map { input[y + it][x + it] } else null
-                    Direction.SOUTH -> if (y <= height - l) xmas.indices.map { input[y + it][x] } else null
-                    Direction.SOUTHWEST -> if (y <= height - l && x >= l - 1) xmas.indices.map { input[y + it][x - it] } else null
-                    Direction.WEST -> if (x >= l - 1) xmas.indices.map { input[y][x - it] } else null
-                    Direction.NORTHWEST -> if (x >= l - 1 && y >= l - 1) xmas.indices.map { input[y - it][x - it] } else null
+                    Direction4.NORTH -> if (y >= l - 1) xmas.indices.map { input[y - it][x] } else null
+                    Direction4.NORTHEAST -> if (y >= l - 1 && x <= width - l) xmas.indices.map { input[y - it][x + it] } else null
+                    Direction4.EAST -> if (x <= width - l) xmas.indices.map { input[y][x + it] } else null
+                    Direction4.SOUTHEAST -> if (x <= width - l && y <= height - l) xmas.indices.map { input[y + it][x + it] } else null
+                    Direction4.SOUTH -> if (y <= height - l) xmas.indices.map { input[y + it][x] } else null
+                    Direction4.SOUTHWEST -> if (y <= height - l && x >= l - 1) xmas.indices.map { input[y + it][x - it] } else null
+                    Direction4.WEST -> if (x >= l - 1) xmas.indices.map { input[y][x - it] } else null
+                    Direction4.NORTHWEST -> if (x >= l - 1 && y >= l - 1) xmas.indices.map { input[y - it][x - it] } else null
                 }?.toCharArray() contentEquals xmas
             }
         }
@@ -24,32 +24,37 @@ fun main() {
         var count = 0
         input.forEachIndexed { y, row ->
             row.forEachIndexed { x, c ->
-                if (c == 'X') count += (x to y).countXmases()
+                if (c == 'X') count += P(x, y).countXmases()
             }
         }
         count
+    }
+
+    val grid = input.mapIndexed { y, row -> row.mapIndexed { x, c -> P(x, y) to c } }.flatten().toMap()
+    val directions = (-1..1).flatMap { y -> (-1..1).map { x -> P(x, y) } }
+    part1 {
+        grid.entries.sumOf { (p, c) ->
+            directions.count { d ->
+                xmas.indices.mapNotNull { i ->
+//                    input[p.y + d.y * i][p.x + d.x * i]
+                    grid[P(p.x + d.x * i, p.y + d.y * i)] }.toCharArray() contentEquals xmas
+            }
+        }
     }
 
     part2 {
-        val mas = "MAS".toCharArray()
-        val sam = "SAM".toCharArray()
-        fun List<Char>.isMasOrSam() = with(toCharArray()) { this contentEquals mas || this contentEquals sam }
-        fun Point.isXmas() = let { (x, y) ->
-            input[y][x] == 'A' && x > 0 && y > 0 && x < width - 1 && y < height - 1 &&
-                    (0 until l - 1).map { input[y - 1 + it][x - 1 + it] }.isMasOrSam() &&
-                    (0 until l - 1).map { input[y + 1 - it][x - 1 + it] }.isMasOrSam()
+        grid.entries.count { (p, c) ->
+            if (c != 'A') return@count false
+            val nw = grid[P(p.x - 1, p.y + 1)]
+            val ne = grid[P(p.x + 1, p.y + 1)]
+            val se = grid[P(p.x + 1, p.y - 1)]
+            val sw = grid[P(p.x - 1, p.y - 1)]
+            ((nw == 'M' && se == 'S') || (se == 'M' && nw == 'S')) &&
+                    ((ne == 'M' && sw == 'S') || (sw == 'M' && ne == 'S'))
         }
-
-        var count = 0
-        (0 until height).forEach { y ->
-            (0 until width).forEach { x ->
-                if ((x to y).isXmas()) count++
-            }
-        }
-        count
     }
 }
 
-enum class Direction {
+private enum class Direction4 {
     NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST
 }

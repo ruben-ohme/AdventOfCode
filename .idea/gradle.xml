@@ -10,6 +10,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/2024" />
+            <option value="$PROJECT_DIR$/2025" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -14,14 +14,11 @@ fun main() {
     part2 {
         updates.sumOf {
             if (it.isValid()) 0 else it.toMutableList().also {
-                var i= 0
+                var i = 0
                 while (i < it.size - 1) {
                     if (!grid[it[i]][it[i + 1]]) {
                         if (grid[it[i + 1]][it[i]]) {
-                            (it[i] to it[i + 1]).apply {
-                                it[i] = second
-                                it[i + 1] = first
-                            }
+                            it.swap(i, i + 1)
                             if (i > 0) i -= 2
                         }
                     }
