@@ -12,7 +12,6 @@ private enum class Direction {
             East -> South
             South -> West
             West -> North
-            else -> this
         }
     val left: Direction
         get() = when (this) {
@@ -20,7 +19,6 @@ private enum class Direction {
             East -> North
             South -> East
             West -> South
-            else -> this
         }
 }
 
@@ -29,7 +27,6 @@ private fun P.move(direction: Direction): P = when (direction) {
     Direction.East -> east
     Direction.South -> south
     Direction.West -> west
-    else -> error("wtf")
 }
 
 private val Char.direction: Direction
@@ -58,7 +55,6 @@ fun main() {
         Direction.East -> x < map[y].size - 1 && map[y][x + 1] == '#'
         Direction.South -> y < map.size - 1 && map[y + 1][x] == '#'
         Direction.West -> x > 0 && map[y][x - 1] == '#'
-        else -> false
     }
 
     fun P.turnRight(c: Direction) = c.right
@@ -66,7 +62,7 @@ fun main() {
 
     part1 {
         var (guard, direction) = map.findGuard()
-        var visited = mutableSetOf<P>()
+        val visited = mutableSetOf<P>()
         while (guard.isWithinBounds()) {
             visited.add(guard)
             if (guard.shouldTurn(direction)) direction = guard.turnRight(direction)
@@ -97,8 +93,8 @@ fun main() {
         }
 
         var (guard, direction) = map.findGuard()
-        var possibleObstructions = mutableSetOf<P>()
-        var visited = mutableSetOf<P>()
+        val possibleObstructions = mutableSetOf<P>()
+        val visited = mutableSetOf<P>()
         while (guard.isWithinBounds()) {
             visited.add(guard)
             val possibleObstruction = guard.move(direction)
@@ -109,7 +105,7 @@ fun main() {
         possibleObstructions.size
     }
 
-    val Obstacles = setOf<P>()
+    val obstacles = setOf<P>()
     map.forEachIndexed { y, row ->
         row.forEachIndexed { x, c ->
             if (c == '#') P(x, y)
@@ -122,7 +118,7 @@ fun main() {
         val turns = mutableListOf<P>()
         var position = guardPosition
         var direction = guardDirection
-        var obstacles = Obstacles.toMutableSet()
+        val obstacles = obstacles.toMutableSet()
         obstacles += obstactlePosition
 
         while (position.isWithinBounds()) {
@@ -162,19 +158,19 @@ fun main() {
         val visitedSpots = mutableSetOf<P>()
         var (position, direction) = map.findGuard()
         val guardTraps = mutableSetOf<P>()
-        while (position.isWithinBounds() && position !in Obstacles) {
+        while (position.isWithinBounds() && position !in obstacles) {
             visitedSpots += position
             var nextPosition = position.move(direction)
 
             // When an obstacle is encountered, turn right until the path is clear
-            if (nextPosition in Obstacles) {
+            if (nextPosition in obstacles) {
                 val exploredNextPositions = mutableSetOf(nextPosition)
                 var foundNextSpot = false
                 while (!foundNextSpot) {
                     direction = direction.right
                     nextPosition = position.move(direction)
                     exploredNextPositions += nextPosition
-                    if (nextPosition !in Obstacles) foundNextSpot = true
+                    if (nextPosition !in obstacles) foundNextSpot = true
                 }
                 // Try placing an obstacle at the next position
                 if (nextPosition !in visitedSpots && willTrapGuard(position, direction, nextPosition)) {

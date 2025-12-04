@@ -10,10 +10,10 @@ fun <T> parseInput(day: Int, parse: (String) -> T): List<T> =
         .filter { it.isNotBlank() }
         .map { parse(it) }
 
-fun part1(solve: () -> Int) = part(1, solve)
-fun part2(solve: () -> Int) = part(2, solve)
+fun part1(solve: () -> Long) = part(1, solve)
+fun part2(solve: () -> Long) = part(2, solve)
 
-private fun part(part: Int, solve: () -> Int) {
+private fun part(part: Int, solve: () -> Long) {
     val startTime = System.nanoTime()
     val answer = solve()
     val endTime = System.nanoTime()
