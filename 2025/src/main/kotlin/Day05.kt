@@ -3,13 +3,14 @@ fun main() {
     val (first, second) = readInput(5).split("\n\n")
     val ranges = first.split('\n').filter { it.isNotBlank() }
         .map { line -> line.split('-').map { it.toLong() }.let { it[0]..it[1] } }
+        .mergeOverlappingRanges()
     val ingredients = second.split('\n').filter { it.isNotBlank() }.map { it.toLong() }
 
     /* How many of the available ingredient IDs are fresh? */
     part1 { ingredients.count { id -> ranges.any { id in it } }.toLong() }
 
     /* the Elves would like to know all of the IDs that the fresh ingredient ID ranges consider to be fresh. */
-    part2 { ranges.mergeOverlappingRanges().sumOf { it.last - it.first + 1 } }
+    part2 { ranges.sumOf { it.last - it.first + 1 } }
 }
 
 private fun List<LongRange>.mergeOverlappingRanges(): List<LongRange> {
